@@ -21,7 +21,7 @@
     
     # 환경변수 기본값
     ENV BASE_URL=http://localhost:8080
-    ENV DATA_DIR=/data
+    ENV DATA_DIR=/uploads
     
     ENTRYPOINT ["/server"]
     
