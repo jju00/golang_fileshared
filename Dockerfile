@@ -17,11 +17,6 @@
     FROM scratch
     WORKDIR /
     COPY --from=build /app/server /server
-    EXPOSE 8080
-    
-    # 환경변수 기본값
-    ENV BASE_URL=http://localhost:8080
-    ENV DATA_DIR=/uploads
-    
+        
     ENTRYPOINT ["/server"]
     
