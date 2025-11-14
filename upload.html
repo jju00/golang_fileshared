@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>파일 업로드</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .desc {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .dropzone {
+      border: 3px dashed #007bff;
+      border-radius: 12px;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+      transition: all 0.2s;
+    }
+    .dropzone.dragover {
+      background: #e7f3ff;
+      transform: scale(1.02);
+    }
+    .btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .hint {
+      text-align: center;
+      color: #999;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📤 파일 업로드</h1>
+    <p class="desc">파일을 선택하거나 드래그하여 업로드하세요</p>
+
+    <div class="card">
+      <form id="form" action="/upload" method="post" enctype="multipart/form-data">
+        <input id="file" type="file" name="file" style="display:none" 
+               accept=".txt,.pdf,.png,.jpg,.jpeg,.zip">
+        <div id="drop" class="dropzone">
+          <button type="button" class="btn" id="btn">파일 선택</button>
+        </div>
+        <p class="hint">허용된 파일 형식: txt, pdf, png, jpg, jpeg, zip (최대 20MB)</p>
+      </form>
+      <a href="/list" class="link">📁 업로드된 파일 보기</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const file = document.getElementById('file');
+    const btn = document.getElementById('btn');
+    const drop = document.getElementById('drop');
+
+    btn.onclick = () => file.click();
+    file.onchange = () => file.files.length && form.submit();
+
+    ['dragenter', 'dragover'].forEach(e => 
+      drop.addEventListener(e, evt => {
+        evt.preventDefault();
+        drop.classList.add('dragover');
+      })
+    );
+
+    ['dragleave', 'drop'].forEach(e => 
+      drop.addEventListener(e, evt => {
+        evt.preventDefault();
+        drop.classList.remove('dragover');
+      })
+    );
+
+    drop.addEventListener('drop', async evt => {
+      const files = evt.dataTransfer.files;
+      if (!files?.length) return;
+      
+      const data = new FormData();
+      data.append('file', files[0]);
+      
+      const res = await fetch('/upload', {
+        method: 'POST',
+        body: data,
+        redirect: 'follow'
+      });
+      
+      if (res.redirected) window.location.href = res.url;
+    });
+  </script>
+</body>
+</html>
