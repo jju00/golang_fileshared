@@ -13,10 +13,12 @@
     ENV CGO_ENABLED=0 GOOS=linux
     RUN go build -o server .
     
-    # ---- Run stage ----
-    FROM scratch
-    WORKDIR /
-    COPY --from=build /app/server /server
-        
-    ENTRYPOINT ["/server"]
+# ---- Run stage ----
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /app
+COPY --from=build /app/server /app/server
+RUN mkdir -p /app/uploads
+    
+ENTRYPOINT ["/app/server"]
     

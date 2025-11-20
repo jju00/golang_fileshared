@@ -5,6 +5,7 @@ import (
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
+	"embed"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -19,6 +20,9 @@ import (
 	"strings"
 	"time"
 )
+
+//go:embed upload.html list.html
+var htmlFiles embed.FS
 
 var (
 	// 기본 설정들. render에서 설정한 값을 사용하고, 없으면 아래 값들을 사용. 로컬 디버깅용
@@ -48,11 +52,23 @@ func main() {
 
 // 로컬 디버깅용
 func home(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "upload.html")
+	data, err := htmlFiles.ReadFile("upload.html")
+	if err != nil {
+		http.Error(w, "upload.html not found", 404)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(data)
 }
 
 func listPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "list.html")
+	data, err := htmlFiles.ReadFile("list.html")
+	if err != nil {
+		http.Error(w, "list.html not found", 404)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(data)
 }
 
 // 브라우저에서 폼으로 업로드 시 처리
