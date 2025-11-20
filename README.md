@@ -1,6 +1,6 @@
 # 📁 Golang File Shared
 
-간단하고 안전한 파일 공유 플랫폼입니다. 웹 UI와 API를 통해 파일을 업로드하고, 고유한 링크로 공유할 수 있습니다.
+간단하고 안전한 파일 공유 플랫폼입니다. 웹 UI와 API를 통해 자유롭게 파일을 업로드하고, 다운로드할 수 있습니다.
 
 🌐 **Live Service**: [https://golang-fileshared.onrender.com](https://golang-fileshared.onrender.com)
 
@@ -24,6 +24,8 @@
 - **Frontend**: Vanilla HTML/CSS/JavaScript
 - **Container**: Docker
 - **Deployment**: Render.com
+
+<br>
 
 ## 📋 지원 파일 형식
 
@@ -106,7 +108,7 @@ curl https://golang-fileshared.onrender.com/api/files
 ## 🔐 보안 기능
 
 ### 1. HMAC 토큰 인증
-모든 다운로드 링크는 HMAC-SHA256 서명으로 보호됩니다. 서버의 비밀키 없이는 유효한 링크를 생성할 수 없습니다.
+모든 다운로드 링크는 HMAC-SHA256 서명으로 보호됩니다. 서버의 비밀키 없이는 유효한 링크 생성이 불가능합니다.
 
 ### 2. 파일 타입 검증
 - 파일 확장자와 실제 Content-Type 일치 여부 검증
@@ -202,9 +204,3 @@ services:
 ```bash
 docker-compose up
 ```
-
-<br>
-
-## 📝 라이센스
-
-MIT License
