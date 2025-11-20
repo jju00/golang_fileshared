@@ -38,12 +38,12 @@ func main() {
 	_ = os.MkdirAll(dataDir, 0o755)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /", home)
-	mux.HandleFunc("GET /list", listPage)
+	mux.HandleFunc("/{$}", home)                    // 정확히 / 경로만
+	mux.HandleFunc("/list", listPage)
 	mux.HandleFunc("POST /upload", uploadWeb)
 	mux.HandleFunc("POST /api/upload", uploadAPI)
-	mux.HandleFunc("GET /api/files", listFiles)
-	mux.HandleFunc("GET /d/{id}/{name}", download)
+	mux.HandleFunc("/api/files", listFiles)
+	mux.HandleFunc("/d/{id}/{name}", download)
 
 	addr := ":" + env("PORT", "8080")
 	log.Printf("listening on %s", addr)
@@ -52,19 +52,24 @@ func main() {
 
 // 로컬 디버깅용
 func home(w http.ResponseWriter, r *http.Request) {
+	log.Printf("home() called, path=%s", r.URL.Path)
 	data, err := htmlFiles.ReadFile("upload.html")
 	if err != nil {
-		http.Error(w, "upload.html not found", 404)
+		log.Printf("ERROR: Failed to read upload.html: %v", err)
+		http.Error(w, fmt.Sprintf("upload.html not found: %v", err), 404)
 		return
 	}
+	log.Printf("Successfully read upload.html, size=%d bytes", len(data))
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write(data)
 }
 
 func listPage(w http.ResponseWriter, r *http.Request) {
+	log.Printf("listPage() called")
 	data, err := htmlFiles.ReadFile("list.html")
 	if err != nil {
-		http.Error(w, "list.html not found", 404)
+		log.Printf("ERROR: Failed to read list.html: %v", err)
+		http.Error(w, fmt.Sprintf("list.html not found: %v", err), 404)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

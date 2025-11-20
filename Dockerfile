@@ -9,6 +9,9 @@
     # 소스 복사
     COPY . .
     
+    # 파일 확인 (디버깅)
+    RUN ls -la && echo "Checking HTML files:" && ls -la *.html || echo "No HTML files found"
+    
     # 빌드 (CGO 비활성화 + 리눅스용)
     ENV CGO_ENABLED=0 GOOS=linux
     RUN go build -o server .
